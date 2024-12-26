@@ -22,8 +22,7 @@ class PipelineLoader:
         return {
             "required": {
                 "weight_dtype": (("float32", "float16", "bfloat16"), ),
-                "lowvram": ("BOOLEAN", {"default": False}),
-                
+                "enable_sequential_cpu_offload": ("BOOLEAN", {"default": False}),
             }
         }
     
@@ -32,7 +31,7 @@ class PipelineLoader:
     RETURN_TYPES = ("PIPELINE",)
     FUNCTION = "load_pipeline"
     
-    def load_pipeline(self, weight_dtype, lowvram):
+    def load_pipeline(self, weight_dtype, enable_sequential_cpu_offload):
         if weight_dtype == "float32":
             weight_dtype = torch.float32
         elif weight_dtype == "float16":
@@ -112,7 +111,7 @@ class PipelineLoader:
         pipe = pipe.to(DEVICE)
         pipe.weight_dtype = weight_dtype
 
-        if lowvram == True:
+        if enable_sequential_cpu_offload == True:
             pipe.enable_sequential_cpu_offload()
         
         return (pipe, )
